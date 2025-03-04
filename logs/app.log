@@ -1,0 +1,79 @@
+2025-03-04 09:30:04 | INFO     | utils.logger:setup_logger:42 - 日志系统初始化完成
+2025-03-04 09:30:04 | INFO     | web.app:ensure_dir_exists:43 - 创建目录: data/raw
+2025-03-04 09:30:04 | INFO     | web.app:ensure_dir_exists:43 - 创建目录: data/processed
+2025-03-04 09:30:04 | INFO     | web.app:ensure_dir_exists:43 - 创建目录: data/output
+2025-03-04 09:30:04 | INFO     | utils.logger:setup_logger:42 - 日志系统初始化完成
+2025-03-04 09:30:07 | INFO     | utils.logger:setup_logger:42 - 日志系统初始化完成
+2025-03-04 09:30:07 | INFO     | utils.logger:setup_logger:42 - 日志系统初始化完成
+2025-03-04 09:33:54 | INFO     | crawler.search.engine:search:61 - 正在搜索第 1 页: 国家科学技术奖
+2025-03-04 09:33:58 | INFO     | crawler.search.engine:save_results:212 - 搜索结果已保存到: data/raw/search_results_20250304_093358.json
+2025-03-04 09:34:07 | INFO     | crawler.search.engine:search:61 - 正在搜索第 1 页: 国家科学技术奖 2023
+2025-03-04 09:34:08 | WARNING  | crawler.search.engine:_get_page:147 - 检测到搜索被限制，等待恢复
+2025-03-04 09:35:08 | WARNING  | crawler.search.engine:search:70 - 获取页面失败，第 1 次重试
+2025-03-04 09:35:12 | INFO     | crawler.search.engine:search:61 - 正在搜索第 1 页: 国家科学技术奖 2023
+2025-03-04 09:35:14 | WARNING  | crawler.search.engine:_get_page:147 - 检测到搜索被限制，等待恢复
+2025-03-04 09:36:14 | WARNING  | crawler.search.engine:search:70 - 获取页面失败，第 2 次重试
+2025-03-04 09:36:18 | INFO     | crawler.search.engine:search:61 - 正在搜索第 1 页: 国家科学技术奖 2023
+2025-03-04 09:36:19 | WARNING  | crawler.search.engine:_get_page:147 - 检测到搜索被限制，等待恢复
+2025-03-04 09:37:19 | WARNING  | crawler.search.engine:search:70 - 获取页面失败，第 3 次重试
+2025-03-04 09:37:23 | INFO     | crawler.search.engine:search:61 - 正在搜索第 1 页: 国家科学技术奖 2023
+2025-03-04 09:37:24 | WARNING  | crawler.search.engine:_get_page:147 - 检测到搜索被限制，等待恢复
+2025-03-04 09:38:24 | ERROR    | crawler.search.engine:search:74 - 重试次数已达上限，停止搜索
+2025-03-04 09:38:24 | INFO     | crawler.search.engine:save_results:212 - 搜索结果已保存到: data/raw/search_results_20250304_093824.json
+2025-03-04 09:39:40 | INFO     | crawler.search.engine:search:61 - 正在搜索第 1 页: 国家科学技术奖 2023
+2025-03-04 09:39:41 | WARNING  | crawler.search.engine:_get_page:147 - 检测到搜索被限制，等待恢复
+2025-03-04 09:40:41 | WARNING  | crawler.search.engine:search:70 - 获取页面失败，第 1 次重试
+2025-03-04 09:40:42 | INFO     | processor.cleaner:clean_file:23 - 开始清理文件: data/raw\search_results_20250304_093824.json
+2025-03-04 09:40:42 | INFO     | processor.cleaner:clean_file:58 - 文件清理完成，共处理 0 条数据，有效数据 0 条
+2025-03-04 09:40:42 | INFO     | web.app:ensure_dir_exists:43 - 创建目录: data/processed/20250304_094042
+2025-03-04 09:40:42 | INFO     | processor.transformer:to_csv:111 - 数据已保存到CSV文件: data/processed/20250304_094042/awards.csv
+2025-03-04 09:40:42 | INFO     | processor.transformer:to_csv:111 - 数据已保存到CSV文件: data/processed/20250304_094042/projects.csv
+2025-03-04 09:40:42 | INFO     | processor.transformer:to_csv:111 - 数据已保存到CSV文件: data/processed/20250304_094042/winners.csv
+2025-03-04 09:40:42 | INFO     | processor.transformer:to_excel:93 - 数据已保存到Excel文件: data/processed/20250304_094042\award_data.xlsx
+2025-03-04 09:40:45 | INFO     | crawler.search.engine:search:61 - 正在搜索第 1 页: 国家科学技术奖 2023
+2025-03-04 09:40:46 | WARNING  | crawler.search.engine:_get_page:147 - 检测到搜索被限制，等待恢复
+2025-03-04 09:40:54 | INFO     | analyzer.award:load_data:38 - 从Excel文件加载数据: data/processed\20250304_094042\award_data.xlsx
+2025-03-04 09:40:54 | INFO     | analyzer.award:load_data:51 - 数据加载成功: 0 条奖项, 0 个项目, 0 名获奖人
+2025-03-04 09:40:54 | INFO     | analyzer.award:analyze:102 - 开始执行分析
+2025-03-04 09:40:54 | ERROR    | analyzer.base:get_yearly_stats:59 - 获取年度统计信息失败: 'year'
+2025-03-04 09:40:54 | ERROR    | analyzer.base:get_type_stats:79 - 获取奖项类型统计信息失败: 'award_type'
+2025-03-04 09:40:54 | ERROR    | analyzer.base:get_organization_stats:106 - 获取机构统计信息失败: 'organization'
+2025-03-04 09:40:54 | ERROR    | analyzer.base:get_winner_stats:132 - 获取获奖人统计信息失败: 'name'
+2025-03-04 09:40:54 | ERROR    | analyzer.award:get_trend_analysis:201 - 获取趋势分析失败: 'year'
+2025-03-04 09:40:54 | WARNING  | analyzer.award:get_regional_analysis:214 - 数据中缺少'organization'字段，无法进行地区分析
+2025-03-04 09:40:54 | WARNING  | analyzer.award:get_collaboration_analysis:257 - 项目数据中缺少'name'字段，无法进行合作关系分析
+2025-03-04 09:40:54 | WARNING  | analyzer.award:get_field_analysis:336 - 项目数据中缺少'name'字段，无法进行研究领域分析
+2025-03-04 09:40:54 | INFO     | analyzer.award:analyze:116 - 分析完成
+2025-03-04 09:40:54 | INFO     | web.app:ensure_dir_exists:43 - 创建目录: data/output/20250304_094054
+2025-03-04 09:40:54 | INFO     | analyzer.award:save_results:129 - 保存分析结果到: data/output/20250304_094054
+2025-03-04 09:40:54 | INFO     | analyzer.award:save_results:160 - 分析结果保存成功
+2025-03-04 09:40:54 | INFO     | web.app:ensure_dir_exists:43 - 创建目录: data/output/20250304_094054\charts
+2025-03-04 09:40:54 | ERROR    | web.app:analyze:181 - 数据分析失败: 'AwardVisualizer' object has no attribute 'plot_all'
+2025-03-04 09:41:06 | INFO     | analyzer.award:load_results:64 - 从结果目录加载分析结果: data/output\20250304_094054
+2025-03-04 09:41:06 | INFO     | analyzer.award:load_results:92 - 分析结果加载成功
+2025-03-04 09:41:07 | ERROR    | analyzer.award:get_trend_analysis:201 - 获取趋势分析失败: 'year'
+2025-03-04 09:41:07 | ERROR    | visualizer.award:plot_trend_analysis:84 - 绘制趋势分析图表失败: 'NoneType' object has no attribute 'empty'
+2025-03-04 09:41:07 | WARNING  | analyzer.award:get_regional_analysis:214 - 数据中缺少'organization'字段，无法进行地区分析
+2025-03-04 09:41:07 | WARNING  | analyzer.award:get_collaboration_analysis:257 - 项目数据中缺少'name'字段，无法进行合作关系分析
+2025-03-04 09:41:07 | ERROR    | visualizer.base:plot_pie:114 - 绘制饼图失败: cannot convert float NaN to integer
+2025-03-04 09:41:07 | WARNING  | analyzer.award:get_field_analysis:336 - 项目数据中缺少'name'字段，无法进行研究领域分析
+2025-03-04 09:41:07 | ERROR    | analyzer.award:get_trend_analysis:201 - 获取趋势分析失败: 'year'
+2025-03-04 09:41:07 | WARNING  | analyzer.award:get_regional_analysis:214 - 数据中缺少'organization'字段，无法进行地区分析
+2025-03-04 09:41:07 | WARNING  | analyzer.award:get_collaboration_analysis:257 - 项目数据中缺少'name'字段，无法进行合作关系分析
+2025-03-04 09:41:07 | WARNING  | analyzer.award:get_field_analysis:336 - 项目数据中缺少'name'字段，无法进行研究领域分析
+2025-03-04 09:41:07 | ERROR    | analyzer.award:get_network_analysis:480 - 获取网络分析失败: division by zero
+2025-03-04 09:41:08 | ERROR    | analyzer.award:get_text_analysis:516 - 获取文本分析失败: 'name'
+2025-03-04 09:41:08 | ERROR    | reporter.award:_analyze_trends:311 - 分析趋势失败: 'NoneType' object has no attribute 'empty'
+2025-03-04 09:41:08 | WARNING  | reporter.pdf:_html_to_pdf:139 - 未找到wkhtmltopdf，将生成HTML报告代替PDF报告
+2025-03-04 09:41:08 | INFO     | reporter.pdf:_html_to_pdf:152 - 已生成HTML报告代替PDF报告: reports\award_analysis_20250304_094106.html
+2025-03-04 09:41:08 | ERROR    | reporter.pdf:_html_to_pdf:156 - HTML转PDF失败: 未找到wkhtmltopdf，已生成HTML报告代替PDF报告
+2025-03-04 09:41:08 | WARNING  | reporter.pdf:generate_report:60 - PDF生成失败，已生成HTML报告: reports\award_analysis_20250304_094106.html
+2025-03-04 09:41:08 | INFO     | reporter.pdf:generate_report:66 - 报告已生成: reports\award_analysis_20250304_094106.html
+2025-03-04 09:41:46 | WARNING  | crawler.search.engine:search:70 - 获取页面失败，第 2 次重试
+2025-03-04 09:41:50 | INFO     | crawler.search.engine:search:61 - 正在搜索第 1 页: 国家科学技术奖 2023
+2025-03-04 09:41:51 | WARNING  | crawler.search.engine:_get_page:147 - 检测到搜索被限制，等待恢复
+2025-03-04 09:42:51 | WARNING  | crawler.search.engine:search:70 - 获取页面失败，第 3 次重试
+2025-03-04 09:42:55 | INFO     | crawler.search.engine:search:61 - 正在搜索第 1 页: 国家科学技术奖 2023
+2025-03-04 09:42:58 | WARNING  | crawler.search.engine:_get_page:147 - 检测到搜索被限制，等待恢复
+2025-03-04 09:43:58 | ERROR    | crawler.search.engine:search:74 - 重试次数已达上限，停止搜索
+2025-03-04 09:44:00 | INFO     | crawler.search.engine:save_results:212 - 搜索结果已保存到: data/raw/search_results_20250304_094358.json

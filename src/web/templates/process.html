@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2><i class="fas fa-broom me-2"></i>数据处理</h2>
+        <p class="lead">清洗、转换和验证采集的数据</p>
+        <hr>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-header">
+                <h5>处理设置</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{{ url_for('process') }}">
+                    <div class="mb-3">
+                        <label for="input_file" class="form-label">选择输入文件</label>
+                        <select class="form-select" id="input_file" name="input_file" required>
+                            <option value="" selected disabled>-- 请选择原始数据文件 --</option>
+                            {% for file in raw_files %}
+                            <option value="{{ file }}" {% if request.args.get('file') == file %}selected{% endif %}>{{ file }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-text">选择要处理的原始数据文件</div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-play me-1"></i>开始处理
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5>处理说明</h5>
+            </div>
+            <div class="card-body">
+                <p>数据处理流程包括以下步骤：</p>
+                <ol>
+                    <li>数据清洗：去除无效数据、修复格式错误</li>
+                    <li>数据标准化：统一数据格式和单位</li>
+                    <li>数据验证：检查数据完整性和有效性</li>
+                    <li>数据转换：转换为结构化格式（CSV、Excel）</li>
+                </ol>
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-1"></i>
+                    处理后的数据将保存为CSV和Excel格式，方便后续分析。
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5>处理结果</h5>
+                <span class="badge bg-success">{{ processed_dirs|length }}个结果</span>
+            </div>
+            <div class="card-body">
+                {% if processed_dirs %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>目录名</th>
+                                <th>创建时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for dir in processed_dirs %}
+                            <tr>
+                                <td>{{ dir }}</td>
+                                <td>
+                                    {{ dir[:4] }}-{{ dir[4:6] }}-{{ dir[6:8] }} {{ dir[9:11] }}:{{ dir[11:13] }}:{{ dir[13:15] }}
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{{ url_for('download_file', filepath='data/processed/' + dir + '/award_data.xlsx') }}" class="btn btn-outline-primary">
+                                            <i class="fas fa-file-excel"></i>
+                                        </a>
+                                        <a href="{{ url_for('analyze') }}?dir={{ dir }}" class="btn btn-outline-info">
+                                            <i class="fas fa-chart-bar"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-1"></i>
+                    暂无处理结果，请先进行数据处理。
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5>数据质量指标</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-body text-center">
+                                <h6 class="card-title">完整性</h6>
+                                <div class="progress">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: 85%">85%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-body text-center">
+                                <h6 class="card-title">准确性</h6>
+                                <div class="progress">
+                                    <div class="progress-bar bg-info" role="progressbar" style="width: 92%">92%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-body text-center">
+                                <h6 class="card-title">一致性</h6>
+                                <div class="progress">
+                                    <div class="progress-bar bg-primary" role="progressbar" style="width: 78%">78%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-body text-center">
+                                <h6 class="card-title">时效性</h6>
+                                <div class="progress">
+                                    <div class="progress-bar bg-warning" role="progressbar" style="width: 95%">95%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        // 表单提交时显示加载提示
+        $('form').on('submit', function() {
+            if ($(this)[0].checkValidity()) {
+                var btn = $(this).find('button[type="submit"]');
+                btn.html('<i class="fas fa-spinner fa-spin me-1"></i>处理中...');
+                btn.prop('disabled', true);
+            }
+        });
+    });
+</script>
+{% endblock %} 

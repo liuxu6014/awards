@@ -1,0 +1,9 @@
+2025-03-03 09:26:11 | INFO     | utils.logger:setup_logger:42 - 日志系统初始化完成
+2025-03-03 09:26:11 | INFO     | web.app:ensure_dir_exists:41 - 创建目录: data/raw
+2025-03-03 09:26:11 | INFO     | web.app:ensure_dir_exists:41 - 创建目录: data/processed
+2025-03-03 09:26:11 | INFO     | web.app:ensure_dir_exists:41 - 创建目录: data/output
+2025-03-03 09:26:11 | INFO     | web.app:ensure_dir_exists:41 - 创建目录: reports
+2025-03-03 09:26:11 | INFO     | web.app:ensure_dir_exists:41 - 创建目录: reports/charts
+2025-03-03 09:26:11 | INFO     | utils.logger:setup_logger:42 - 日志系统初始化完成
+2025-03-03 09:26:13 | INFO     | utils.logger:setup_logger:42 - 日志系统初始化完成
+2025-03-03 09:26:13 | INFO     | utils.logger:setup_logger:42 - 日志系统初始化完成

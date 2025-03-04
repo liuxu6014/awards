@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">{{ title }}</h1>
+    
+    <!-- 总体质量得分 -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4 class="mb-0">总体质量评分</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="progress" style="height: 2rem;">
+                        <div class="progress-bar" role="progressbar" 
+                             style="width: {{ quality_metrics.overall_score * 100 }}%;"
+                             aria-valuenow="{{ quality_metrics.overall_score * 100 }}"
+                             aria-valuemin="0" aria-valuemax="100">
+                            {{ "%.1f"|format(quality_metrics.overall_score * 100) }}%
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <p class="lead mb-0">
+                        总体评分: {{ "%.1f"|format(quality_metrics.overall_score * 100) }}/100
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 各维度质量评分 -->
+    <div class="row">
+        <!-- 完整性 -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h4 class="mb-0">数据完整性</h4>
+                </div>
+                <div class="card-body">
+                    <div class="progress mb-3" style="height: 1.5rem;">
+                        <div class="progress-bar bg-info" role="progressbar"
+                             style="width: {{ quality_metrics.completeness.score * 100 }}%;"
+                             aria-valuenow="{{ quality_metrics.completeness.score * 100 }}"
+                             aria-valuemin="0" aria-valuemax="100">
+                            {{ "%.1f"|format(quality_metrics.completeness.score * 100) }}%
+                        </div>
+                    </div>
+                    {% if quality_metrics.completeness.issues %}
+                    <h5>发现的问题：</h5>
+                    <ul class="list-unstyled">
+                        {% for issue in quality_metrics.completeness.issues %}
+                        <li><i class="fas fa-exclamation-triangle text-warning"></i> {{ issue }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- 准确性 -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h4 class="mb-0">数据准确性</h4>
+                </div>
+                <div class="card-body">
+                    <div class="progress mb-3" style="height: 1.5rem;">
+                        <div class="progress-bar bg-success" role="progressbar"
+                             style="width: {{ quality_metrics.accuracy.score * 100 }}%;"
+                             aria-valuenow="{{ quality_metrics.accuracy.score * 100 }}"
+                             aria-valuemin="0" aria-valuemax="100">
+                            {{ "%.1f"|format(quality_metrics.accuracy.score * 100) }}%
+                        </div>
+                    </div>
+                    {% if quality_metrics.accuracy.issues %}
+                    <h5>发现的问题：</h5>
+                    <ul class="list-unstyled">
+                        {% for issue in quality_metrics.accuracy.issues %}
+                        <li><i class="fas fa-exclamation-triangle text-warning"></i> {{ issue }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- 一致性 -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h4 class="mb-0">数据一致性</h4>
+                </div>
+                <div class="card-body">
+                    <div class="progress mb-3" style="height: 1.5rem;">
+                        <div class="progress-bar bg-primary" role="progressbar"
+                             style="width: {{ quality_metrics.consistency.score * 100 }}%;"
+                             aria-valuenow="{{ quality_metrics.consistency.score * 100 }}"
+                             aria-valuemin="0" aria-valuemax="100">
+                            {{ "%.1f"|format(quality_metrics.consistency.score * 100) }}%
+                        </div>
+                    </div>
+                    {% if quality_metrics.consistency.issues %}
+                    <h5>发现的问题：</h5>
+                    <ul class="list-unstyled">
+                        {% for issue in quality_metrics.consistency.issues %}
+                        <li><i class="fas fa-exclamation-triangle text-warning"></i> {{ issue }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- 时效性 -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h4 class="mb-0">数据时效性</h4>
+                </div>
+                <div class="card-body">
+                    <div class="progress mb-3" style="height: 1.5rem;">
+                        <div class="progress-bar bg-warning" role="progressbar"
+                             style="width: {{ quality_metrics.timeliness.score * 100 }}%;"
+                             aria-valuenow="{{ quality_metrics.timeliness.score * 100 }}"
+                             aria-valuemin="0" aria-valuemax="100">
+                            {{ "%.1f"|format(quality_metrics.timeliness.score * 100) }}%
+                        </div>
+                    </div>
+                    {% if quality_metrics.timeliness.issues %}
+                    <h5>发现的问题：</h5>
+                    <ul class="list-unstyled">
+                        {% for issue in quality_metrics.timeliness.issues %}
+                        <li><i class="fas fa-exclamation-triangle text-warning"></i> {{ issue }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 详细信息 -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4 class="mb-0">详细评估信息</h4>
+        </div>
+        <div class="card-body">
+            <div class="accordion" id="qualityDetails">
+                {% for metric, data in quality_metrics.items() if metric != 'overall_score' %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="heading{{ metric }}">
+                        <button class="accordion-button collapsed" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#collapse{{ metric }}"
+                                aria-expanded="false" aria-controls="collapse{{ metric }}">
+                            {{ metric|title }} 详细信息
+                        </button>
+                    </h2>
+                    <div id="collapse{{ metric }}" class="accordion-collapse collapse"
+                         aria-labelledby="heading{{ metric }}" data-bs-parent="#qualityDetails">
+                        <div class="accordion-body">
+                            <pre class="bg-light p-3 rounded">{{ data.details|tojson(indent=2) }}</pre>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- 操作按钮 -->
+    <div class="mb-4">
+        <a href="{{ url_for('process') }}" class="btn btn-secondary">返回</a>
+        <a href="{{ url_for('api_quality', input_dir=input_dir) }}" 
+           class="btn btn-primary" target="_blank">查看API结果</a>
+    </div>
+</div>
+{% endblock %} 

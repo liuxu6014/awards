@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2><i class="fas fa-spider me-2"></i>数据采集</h2>
+        <p class="lead">从互联网自动采集科技奖励数据</p>
+        <hr>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-header">
+                <h5>采集设置</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{{ url_for('collect') }}">
+                    <div class="mb-3">
+                        <label for="keywords" class="form-label">搜索关键词</label>
+                        <input type="text" class="form-control" id="keywords" name="keywords" 
+                               placeholder="例如：国家科学技术奖 2023" required>
+                        <div class="form-text">输入要搜索的科技奖励相关关键词</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="search_engine" class="form-label">搜索引擎</label>
+                        <select class="form-select" id="search_engine" name="search_engine">
+                            <option value="bing" selected>必应 (Bing)</option>
+                            <option value="baidu">百度 (Baidu)</option>
+                            <option value="google">谷歌 (Google)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="max_results" class="form-label">最大结果数</label>
+                        <input type="number" class="form-control" id="max_results" name="max_results" 
+                               value="10" min="1" max="100">
+                        <div class="form-text">设置要采集的最大结果数量</div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-play me-1"></i>开始采集
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5>采集说明</h5>
+            </div>
+            <div class="card-body">
+                <p>本系统支持从多个搜索引擎采集科技奖励数据，采集过程包括：</p>
+                <ol>
+                    <li>搜索引擎检索</li>
+                    <li>网页内容提取</li>
+                    <li>PDF文档解析</li>
+                    <li>图片OCR识别</li>
+                    <li>数据结构化</li>
+                </ol>
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-1"></i>
+                    请注意：采集过程可能需要一些时间，请耐心等待。
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5>采集结果</h5>
+                <span class="badge bg-primary">{{ raw_files|length }}个文件</span>
+            </div>
+            <div class="card-body">
+                {% if raw_files %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>文件名</th>
+                                <th>创建时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for file in raw_files %}
+                            <tr>
+                                <td>{{ file }}</td>
+                                <td>
+                                    {% set timestamp = file.split('_')[2].split('.')[0] %}
+                                    {{ timestamp[:4] }}-{{ timestamp[4:6] }}-{{ timestamp[6:8] }} {{ timestamp[9:11] }}:{{ timestamp[11:13] }}:{{ timestamp[13:15] }}
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{{ url_for('download_file', filepath='data/raw/' + file) }}" class="btn btn-outline-primary">
+                                            <i class="fas fa-download"></i>
+                                        </a>
+                                        <a href="{{ url_for('process') }}?file={{ file }}" class="btn btn-outline-success">
+                                            <i class="fas fa-broom"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-1"></i>
+                    暂无采集结果，请先进行数据采集。
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        // 表单提交时显示加载提示
+        $('form').on('submit', function() {
+            if ($(this)[0].checkValidity()) {
+                var btn = $(this).find('button[type="submit"]');
+                btn.html('<i class="fas fa-spinner fa-spin me-1"></i>采集中...');
+                btn.prop('disabled', true);
+            }
+        });
+    });
+</script>
+{% endblock %} 

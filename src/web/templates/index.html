@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12 text-center mb-4">
+        <h1 class="display-4">科技奖励数据采集与分析系统</h1>
+        <p class="lead">自动化收集和分析全国各级科技奖励信息</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">系统概述</h5>
+                <p class="card-text">
+                    本系统使用先进的网络爬虫技术和人工智能技术，从互联网上自动获取科技奖励相关数据，并进行深入分析。
+                    通过本系统，您可以快速了解全国各级科技奖励的分布情况、趋势变化和研究热点。
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="card mb-4">
+            <div class="card-body text-center">
+                <i class="fas fa-spider fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">数据采集</h5>
+                <p class="card-text">从互联网自动采集科技奖励数据</p>
+                <a href="{{ url_for('collect') }}" class="btn btn-primary">开始采集</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card mb-4">
+            <div class="card-body text-center">
+                <i class="fas fa-broom fa-3x text-success mb-3"></i>
+                <h5 class="card-title">数据处理</h5>
+                <p class="card-text">清洗、转换和验证采集的数据</p>
+                <a href="{{ url_for('process') }}" class="btn btn-success">处理数据</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card mb-4">
+            <div class="card-body text-center">
+                <i class="fas fa-chart-bar fa-3x text-info mb-3"></i>
+                <h5 class="card-title">数据分析</h5>
+                <p class="card-text">分析数据并生成可视化图表</p>
+                <a href="{{ url_for('analyze') }}" class="btn btn-info">分析数据</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card mb-4">
+            <div class="card-body text-center">
+                <i class="fas fa-file-alt fa-3x text-warning mb-3"></i>
+                <h5 class="card-title">报告生成</h5>
+                <p class="card-text">生成分析报告并查看结果</p>
+                <a href="{{ url_for('report') }}" class="btn btn-warning">生成报告</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5>系统功能</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-check-circle text-success me-2"></i>数据采集功能</h6>
+                        <ul>
+                            <li>多搜索引擎支持（必应、百度等）</li>
+                            <li>智能网页内容提取</li>
+                            <li>PDF文档解析</li>
+                            <li>图片文字识别（OCR）</li>
+                            <li>自动数据结构化</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-check-circle text-success me-2"></i>数据处理功能</h6>
+                        <ul>
+                            <li>数据清洗和标准化</li>
+                            <li>重复数据去除</li>
+                            <li>数据格式统一</li>
+                            <li>数据质量验证</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-check-circle text-success me-2"></i>数据分析功能</h6>
+                        <ul>
+                            <li>奖项分布分析</li>
+                            <li>获奖项目分类统计</li>
+                            <li>获奖人员网络分析</li>
+                            <li>地域分布分析</li>
+                            <li>趋势分析</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-check-circle text-success me-2"></i>报告生成功能</h6>
+                        <ul>
+                            <li>HTML格式报告</li>
+                            <li>PDF格式报告</li>
+                            <li>数据可视化图表</li>
+                            <li>详细数据表格</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

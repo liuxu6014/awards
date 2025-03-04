@@ -1,0 +1,383 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h2><i class="fas fa-chart-bar me-2"></i>数据分析</h2>
+        <p class="lead">分析数据并生成可视化图表</p>
+        <hr>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>分析设置</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{{ url_for('analyze') }}">
+                    <div class="mb-3">
+                        <label for="input_dir" class="form-label">选择输入目录</label>
+                        <select class="form-select" id="input_dir" name="input_dir" required>
+                            <option value="" selected disabled>-- 请选择处理后的数据目录 --</option>
+                            {% for dir in processed_dirs %}
+                            <option value="{{ dir }}" {% if request.args.get('dir') == dir %}selected{% endif %}>{{ dir }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-text">选择要分析的处理后数据目录</div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-info">
+                            <i class="fas fa-play me-1"></i>开始分析
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5>分析说明</h5>
+            </div>
+            <div class="card-body">
+                <p>数据分析包括以下维度：</p>
+                <ul>
+                    <li>奖项分布分析</li>
+                    <li>获奖项目分类统计</li>
+                    <li>获奖人员网络分析</li>
+                    <li>地域分布分析</li>
+                    <li>趋势分析</li>
+                </ul>
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-1"></i>
+                    分析结果将以图表形式展示，并可生成分析报告。
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5>分析结果</h5>
+                <span class="badge bg-info">{{ output_dirs|length }}个结果</span>
+            </div>
+            <div class="card-body">
+                {% if output_dirs %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>目录名</th>
+                                <th>创建时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for dir in output_dirs %}
+                            <tr>
+                                <td>{{ dir }}</td>
+                                <td>
+                                    {{ dir[:4] }}-{{ dir[4:6] }}-{{ dir[6:8] }} {{ dir[9:11] }}:{{ dir[11:13] }}:{{ dir[13:15] }}
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-outline-primary view-stats" data-dir="{{ dir }}">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <a href="{{ url_for('report') }}?dir={{ dir }}" class="btn btn-outline-warning">
+                                            <i class="fas fa-file-alt"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-1"></i>
+                    暂无分析结果，请先进行数据分析。
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="card mt-4" id="stats-card" style="display: none;">
+            <div class="card-header">
+                <h5>统计概览</h5>
+            </div>
+            <div class="card-body">
+                <div id="stats-loading" class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">加载中...</span>
+                    </div>
+                    <p class="mt-2">正在加载统计数据...</p>
+                </div>
+                
+                <div id="stats-content" style="display: none;">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h6 class="card-title">基本统计</h6>
+                                    <table class="table table-sm">
+                                        <tbody>
+                                            <tr>
+                                                <th>奖项总数</th>
+                                                <td id="award-count">-</td>
+                                            </tr>
+                                            <tr>
+                                                <th>项目总数</th>
+                                                <td id="project-count">-</td>
+                                            </tr>
+                                            <tr>
+                                                <th>获奖人总数</th>
+                                                <td id="winner-count">-</td>
+                                            </tr>
+                                            <tr>
+                                                <th>年份范围</th>
+                                                <td id="year-range">-</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h6 class="card-title">奖项分布</h6>
+                                    <table class="table table-sm">
+                                        <tbody id="award-types">
+                                            <!-- 动态填充 -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h6 class="card-title">地区分布 (Top 5)</h6>
+                                    <table class="table table-sm">
+                                        <tbody id="region-stats">
+                                            <!-- 动态填充 -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h6 class="card-title">机构影响力 (Top 5)</h6>
+                                    <table class="table table-sm">
+                                        <tbody id="org-impact">
+                                            <!-- 动态填充 -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-3">
+                        <a href="#" id="view-charts" class="btn btn-outline-primary">
+                            <i class="fas fa-chart-line me-1"></i>查看图表
+                        </a>
+                        <a href="#" id="generate-report" class="btn btn-outline-warning ms-2">
+                            <i class="fas fa-file-alt me-1"></i>生成报告
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 图表模态框 -->
+<div class="modal fade" id="chartsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">分析图表</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center py-5" id="charts-loading">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">加载中...</span>
+                    </div>
+                    <p class="mt-2">正在加载图表...</p>
+                </div>
+                
+                <div id="charts-content" style="display: none;">
+                    <ul class="nav nav-tabs" id="chartTabs">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-bs-toggle="tab" href="#summary-tab">总体概况</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#trend-tab">趋势分析</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#region-tab">地区分析</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#field-tab">领域分析</a>
+                        </li>
+                    </ul>
+                    
+                    <div class="tab-content mt-3">
+                        <div class="tab-pane fade show active" id="summary-tab">
+                            <div class="text-center">
+                                <img src="" alt="总体统计" class="img-fluid" id="summary-chart">
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="trend-tab">
+                            <div class="text-center">
+                                <img src="" alt="趋势分析" class="img-fluid" id="trend-chart">
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="region-tab">
+                            <div class="text-center">
+                                <img src="" alt="地区分析" class="img-fluid" id="region-chart">
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="field-tab">
+                            <div class="text-center">
+                                <img src="" alt="领域分析" class="img-fluid" id="field-chart">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        // 表单提交时显示加载提示
+        $('form').on('submit', function() {
+            if ($(this)[0].checkValidity()) {
+                var btn = $(this).find('button[type="submit"]');
+                btn.html('<i class="fas fa-spinner fa-spin me-1"></i>分析中...');
+                btn.prop('disabled', true);
+            }
+        });
+        
+        // 查看统计信息
+        $('.view-stats').on('click', function() {
+            var dir = $(this).data('dir');
+            $('#stats-card').show();
+            $('#stats-loading').show();
+            $('#stats-content').hide();
+            
+            // 加载统计数据
+            $.ajax({
+                url: '/api/stats/' + dir,
+                method: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        updateStatsUI(response.data, dir);
+                    } else {
+                        alert('加载统计数据失败: ' + response.error);
+                    }
+                },
+                error: function() {
+                    alert('加载统计数据失败，请稍后重试');
+                },
+                complete: function() {
+                    $('#stats-loading').hide();
+                    $('#stats-content').show();
+                }
+            });
+        });
+        
+        // 查看图表
+        $('#view-charts').on('click', function(e) {
+            e.preventDefault();
+            var modal = new bootstrap.Modal(document.getElementById('chartsModal'));
+            modal.show();
+            
+            // 这里应该加载实际图表，目前使用占位图
+            setTimeout(function() {
+                $('#charts-loading').hide();
+                $('#charts-content').show();
+                
+                // 设置图表路径（实际应用中应该从后端获取）
+                $('#summary-chart').attr('src', '/static/img/placeholder-chart.png');
+                $('#trend-chart').attr('src', '/static/img/placeholder-chart.png');
+                $('#region-chart').attr('src', '/static/img/placeholder-chart.png');
+                $('#field-chart').attr('src', '/static/img/placeholder-chart.png');
+            }, 1000);
+        });
+        
+        // 生成报告
+        $('#generate-report').on('click', function(e) {
+            e.preventDefault();
+            var dir = $('.view-stats.active').data('dir');
+            window.location.href = "{{ url_for('report') }}?dir=" + dir;
+        });
+    });
+    
+    // 更新统计UI
+    function updateStatsUI(data, dir) {
+        // 基本统计
+        $('#award-count').text(data.counts.awards || 0);
+        $('#project-count').text(data.counts.projects || 0);
+        $('#winner-count').text(data.counts.winners || 0);
+        
+        var yearRange = data.year_range || {};
+        $('#year-range').text((yearRange.min_year || '-') + ' - ' + (yearRange.max_year || '-'));
+        
+        // 奖项分布
+        var awardTypes = data.award_types || {};
+        var awardTypesHtml = '';
+        for (var type in awardTypes) {
+            awardTypesHtml += '<tr><th>' + type + '</th><td>' + awardTypes[type] + '</td></tr>';
+        }
+        $('#award-types').html(awardTypesHtml || '<tr><td colspan="2">无数据</td></tr>');
+        
+        // 地区分布
+        var regionStats = data.region_stats || {};
+        var regionStatsHtml = '';
+        var regionEntries = Object.entries(regionStats);
+        regionEntries.sort(function(a, b) { return b[1] - a[1]; });
+        regionEntries.slice(0, 5).forEach(function(entry) {
+            regionStatsHtml += '<tr><th>' + entry[0] + '</th><td>' + entry[1] + '</td></tr>';
+        });
+        $('#region-stats').html(regionStatsHtml || '<tr><td colspan="2">无数据</td></tr>');
+        
+        // 机构影响力
+        var orgImpact = data.org_impact || {};
+        var orgImpactHtml = '';
+        var orgEntries = Object.entries(orgImpact);
+        orgEntries.sort(function(a, b) { return b[1] - a[1]; });
+        orgEntries.slice(0, 5).forEach(function(entry) {
+            orgImpactHtml += '<tr><th>' + entry[0] + '</th><td>' + entry[1] + '</td></tr>';
+        });
+        $('#org-impact').html(orgImpactHtml || '<tr><td colspan="2">无数据</td></tr>');
+        
+        // 设置生成报告链接
+        $('#generate-report').attr('href', "{{ url_for('report') }}?dir=" + dir);
+        
+        // 标记当前活动按钮
+        $('.view-stats').removeClass('active');
+        $('.view-stats[data-dir="' + dir + '"]').addClass('active');
+    }
+</script>
+{% endblock %} 
